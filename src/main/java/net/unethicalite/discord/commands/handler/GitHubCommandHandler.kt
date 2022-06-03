@@ -9,7 +9,7 @@ import net.unethicalite.discord.commands.model.CommandResponse
 import net.unethicalite.discord.commands.model.DiscordCommand
 import net.unethicalite.dto.exception.BackendException
 import net.unethicalite.dto.exception.NotFoundException
-import net.unethicalite.discord.messaging.RestService
+import net.unethicalite.discord.service.RestService
 import org.springframework.stereotype.Component
 
 @Component

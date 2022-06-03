@@ -1,4 +1,4 @@
-package net.unethicalite.discord.messaging
+package net.unethicalite.discord.service
 
 import net.unethicalite.dto.exception.BackendException
 import org.springframework.stereotype.Service

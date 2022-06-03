@@ -11,7 +11,7 @@ import net.unethicalite.dto.plans.PlanOverviewDto
 import net.unethicalite.dto.plans.SubscribedDto
 import net.unethicalite.discord.commands.model.DiscordCommand
 import net.unethicalite.dto.exception.BackendException
-import net.unethicalite.discord.messaging.RestService
+import net.unethicalite.discord.service.RestService
 import org.springframework.stereotype.Service
 import java.awt.Color
 import java.util.*
