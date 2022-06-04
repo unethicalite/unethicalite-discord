@@ -1,14 +1,15 @@
 package net.unethicalite.discord.service
 
 import net.unethicalite.dto.exception.BackendException
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
 @Service
 class RestService(
     private val restTemplate: RestTemplate,
+    @Value("\${backend.url}") private val baseUrl: String
 ) {
-    private val baseUrl = "http://localhost:8081"
 
     fun <T> get(url: String, receivedType: Class<T>): T {
         return restTemplate.getForObject("$baseUrl$url", receivedType) ?: throw BackendException("Request failed.")
