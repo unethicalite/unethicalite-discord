@@ -6,6 +6,7 @@ import net.unethicalite.dto.exception.BackendException
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
+import javax.annotation.PostConstruct
 
 @Component
 class StatusScheduler(
@@ -15,8 +16,13 @@ class StatusScheduler(
     @Scheduled(cron = "0 */5 * * * *")
     private fun updateBotStatus() {
         jda.presence.activity = Activity.playing("" +
-                "${restTemplate.getForObject("http://localhost:8080/sessions", Int::class.java) 
+                "${restTemplate.getForObject("http://unethicalite-backend:8080/sessions", Int::class.java) 
                     ?: throw BackendException("Request failed.")} users online."
         )
+    }
+
+    @PostConstruct
+    fun init() {
+        updateBotStatus()
     }
 }
