@@ -16,7 +16,7 @@ class StatusScheduler(
     @Scheduled(cron = "0 */5 * * * *")
     private fun updateBotStatus() {
         jda.presence.activity = Activity.playing("" +
-                "${restTemplate.getForObject("http://unethicalite-backend:8080/sessions", Int::class.java) 
+                "${restTemplate.getForObject("http://unethicalite-backend:8080/sessions", Int::class.java)
                     ?: throw BackendException("Request failed.")} users online."
         )
     }

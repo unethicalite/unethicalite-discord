@@ -79,7 +79,6 @@ abstract class SlashCommandHandler : ListenerAdapter() {
             commandData.add(command.buildSlashCommand())
         }
 
-
         val guild = jda.getGuildById(guildId)
         if (guild == null) {
             logger.error("Could not find guild with id $guildId")
