@@ -1,14 +1,17 @@
 package net.unethicalite.discord.commands.handler
 
+import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.unethicalite.discord.commands.model.DiscordCommand
+import net.unethicalite.discord.helpers.EmbedHelper
 import net.unethicalite.discord.service.RestService
 import net.unethicalite.dto.discord.TagDto
 import net.unethicalite.dto.exception.BackendException
 import org.springframework.stereotype.Component
+import java.awt.Color
 
 @Component
 class TagCommandHandler(
@@ -44,9 +47,11 @@ class TagCommandHandler(
         ),
     )
 
-    fun tag(e: SlashCommandInteractionEvent): String {
+    fun tag(e: SlashCommandInteractionEvent): EmbedBuilder {
         val name = e.getOption("name")?.asString ?: throw BackendException("Invalid tag name given.")
-        return when (e.getOption("operation")?.asString) {
+        val embed = embedHelper.builder()
+
+        val text = when (e.getOption("operation")?.asString) {
             "add" -> {
                 val text = e.getOption("text")?.asString
                     ?.replace("@", "'at'")
@@ -64,5 +69,16 @@ class TagCommandHandler(
                 restService.get("/tags/$name", TagDto::class.java).text
             }
         }
+
+        embed.setTitle(name)
+        embed.setColor(Color.YELLOW)
+
+        if (text.isImage()) {
+            embed.setImage(text)
+        } else {
+            embed.setDescription(text)
+        }
+
+        return embed
     }
 }
