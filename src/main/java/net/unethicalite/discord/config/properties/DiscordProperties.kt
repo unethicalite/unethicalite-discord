@@ -7,5 +7,7 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConstructorBinding
 data class DiscordProperties(
     val token: String,
-    val guildId: String
+    val guildId: String,
+    val statusCron: String,
+    val sessionsUrl: String
 )

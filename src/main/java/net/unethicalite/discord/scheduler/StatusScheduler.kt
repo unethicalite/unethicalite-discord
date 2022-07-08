@@ -2,6 +2,7 @@ package net.unethicalite.discord.scheduler
 
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Activity
+import net.unethicalite.discord.config.properties.DiscordProperties
 import net.unethicalite.dto.exception.BackendException
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -11,13 +12,13 @@ import javax.annotation.PostConstruct
 @Component
 class StatusScheduler(
     private val jda: JDA,
-    private val restTemplate: RestTemplate
+    private val restTemplate: RestTemplate,
+    private val discordProperties: DiscordProperties
 ) {
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "\${discord.bot.status-cron}")
     private fun updateBotStatus() {
         jda.presence.activity = Activity.playing("" +
-                "${restTemplate.getForObject("http://unethicalite-backend:8080/sessions", Int::class.java)
-                    ?: throw BackendException("Request failed.")} users online."
+                "${restTemplate.getForObject(discordProperties.sessionsUrl, Int::class.java) ?: 0} clients connected."
         )
     }
 
