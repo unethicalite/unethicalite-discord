@@ -5,19 +5,22 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
-import net.unethicalite.dto.exception.BackendException
-import net.unethicalite.discord.helpers.EmbedHelper
 import net.unethicalite.discord.commands.model.CommandResponse
 import net.unethicalite.discord.commands.model.DiscordCommand
+import net.unethicalite.discord.helpers.EmbedHelper
+import net.unethicalite.dto.exception.BackendException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import java.awt.Color
+import java.net.MalformedURLException
+import java.net.URL
 import javax.annotation.PostConstruct
 
 abstract class SlashCommandHandler : ListenerAdapter() {
     @Value("\${discord.bot.guild-id}")
     private lateinit var guildId: String
+
     @Autowired
     protected lateinit var embedHelper: EmbedHelper
     private val logger = LoggerFactory.getLogger(SlashCommandHandler::class.java)
@@ -36,7 +39,12 @@ abstract class SlashCommandHandler : ListenerAdapter() {
                 is String -> {
                     embed
                         .setTitle("Unethicalite")
-                        .setDescription(response)
+
+                    if (response.isImage()) {
+                            embed.setImage(response)
+                    } else {
+                        embed.setDescription(response)
+                    }
                 }
 
                 is CommandResponse -> {
@@ -93,4 +101,11 @@ abstract class SlashCommandHandler : ListenerAdapter() {
 
     protected abstract val jda: JDA
     protected abstract val commands: Map<String, DiscordCommand<*>>
+
+    fun String.isImage() = try {
+        URL(this)
+        true
+    } catch (e: MalformedURLException) {
+        false
+    }
 }
