@@ -8,6 +8,7 @@ import net.unethicalite.discord.config.properties.DiscordProperties
 import net.unethicalite.discord.helpers.EmbedHelper
 import net.unethicalite.discord.service.RestService
 import net.unethicalite.dto.github.PluginRepoDto
+import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
@@ -20,8 +21,11 @@ class PluginHubScheduler(
     private val discordProperties: DiscordProperties,
     private val embedHelper: EmbedHelper
 ) {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @Scheduled(cron = "\${discord.bot.plugin-hub-cron}")
     fun postMissingRepos() {
+        log.info("Going to post missing repos")
         val repos = restService.get("/repos", Array<PluginRepoDto>::class.java)
             .filter { it.messageId.isNullOrEmpty() }
         guild.loadMembers().onSuccess { members ->
@@ -45,6 +49,7 @@ class PluginHubScheduler(
 
     @Scheduled(cron = "\${discord.bot.plugin-hub-cron}")
     fun updateRepos() {
+        log.info("Going to update repos")
         val repos = restService.get("/repos", Array<PluginRepoDto>::class.java)
             .filter { !it.messageId.isNullOrEmpty() }
         guild.loadMembers().onSuccess { members ->
