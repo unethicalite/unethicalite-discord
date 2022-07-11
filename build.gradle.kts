@@ -30,7 +30,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("net.dv8tion:JDA:5.0.0-alpha.9")
-    implementation("net.unethicalite:unethicalite-dto:0.0.12")
+    implementation("net.unethicalite:unethicalite-dto:0.0.13")
 }
 
 tasks.withType<KotlinCompile> {

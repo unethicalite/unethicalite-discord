@@ -6,7 +6,6 @@ import net.unethicalite.discord.config.properties.DiscordProperties
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
-import javax.annotation.PostConstruct
 
 @Component
 class StatusScheduler(
@@ -15,15 +14,10 @@ class StatusScheduler(
     private val discordProperties: DiscordProperties
 ) {
     @Scheduled(cron = "\${discord.bot.status-cron}")
-    private fun updateBotStatus() {
+    fun updateBotStatus() {
         println("Checking status")
         jda.presence.activity = Activity.playing("" +
                 "${restTemplate.getForObject(discordProperties.sessionsUrl, Int::class.java) ?: 0} clients connected."
         )
-    }
-
-    @PostConstruct
-    fun init() {
-        updateBotStatus()
     }
 }

@@ -20,7 +20,7 @@ class PluginHubScheduler(
     private val embedHelper: EmbedHelper
 ) {
     @Scheduled(cron = "\${discord.bot.plugin-hub-cron}")
-    private fun postMissingRepos() {
+    fun postMissingRepos() {
         val repos = restService.get("/repos", Array<PluginRepoDto>::class.java)
             .filter { it.messageId.isNullOrEmpty() }
 
@@ -32,21 +32,13 @@ class PluginHubScheduler(
     }
 
     @Scheduled(cron = "\${discord.bot.plugin-hub-cron}")
-    private fun updateRepos() {
+    fun updateRepos() {
         val repos = restService.get("/repos", Array<PluginRepoDto>::class.java)
             .filter { !it.messageId.isNullOrEmpty() }
         for (repo in repos) {
             val user = guild.getMemberById(repo.ownerId) ?: continue
             jda.getTextChannelById(discordProperties.pluginHubChannelId)
-                ?.editMessageEmbedsById(
-                    repo.messageId!!,
-                    embedHelper.builder("Unethicalite Hub")
-                        .setImage(user.avatarUrl)
-                        .addField("Owner", user.user.asMention, false)
-                        .addField("URL", repo.repoUrl, false)
-                        .addField("Plugins", repo.plugins.size.toString(), false)
-                        .build()
-                )
+                ?.editMessageEmbedsById(repo.messageId!!, createEmbed(user, repo))
                 ?.queue(null) {
                     restService.put("/repos/${repo.repoId}?messageId=&ownerId=${repo.ownerId}", null)
                 }
@@ -55,12 +47,17 @@ class PluginHubScheduler(
 
     private fun sendMessage(user: Member, repo: PluginRepoDto): Message? {
         return jda.getTextChannelById(discordProperties.pluginHubChannelId)
-            ?.sendMessageEmbeds(embedHelper.builder("Unethicalite Hub")
-                .setImage(user.avatarUrl)
-                .addField("Owner", user.user.asMention, false)
-                .addField("URL", repo.repoUrl, false)
-                .addField("Plugins", repo.plugins.size.toString(), false)
-                .build())
+            ?.sendMessageEmbeds(createEmbed(user, repo))
             ?.complete()
     }
+
+    private fun createEmbed(user: Member, repo: PluginRepoDto) = embedHelper.builder("Unethicalite Hub")
+        .setThumbnail(user.avatarUrl)
+        .addField("Owner", user.user.asMention, false)
+        .addField("URL", repo.repoUrl, false)
+        .addField("Repo name", repo.repoName, false)
+        .addField("Repo owner", repo.repoOwnerName, false)
+        .addField("Plugins", repo.plugins.size.toString(), false)
+        .build()
+
 }
