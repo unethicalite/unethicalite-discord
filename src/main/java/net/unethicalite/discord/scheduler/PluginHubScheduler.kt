@@ -25,6 +25,7 @@ class PluginHubScheduler(
 
     @Scheduled(cron = "\${discord.bot.plugin-hub-cron}")
     fun postMissingRepos() {
+        if (!discordProperties.pluginHubSchedulerEnabled) return
         log.info("Going to post missing repos")
         val repos = restService.get("/repos", Array<PluginRepoDto>::class.java)
             .filter { it.messageId.isNullOrEmpty() }
@@ -49,6 +50,7 @@ class PluginHubScheduler(
 
     @Scheduled(cron = "\${discord.bot.plugin-hub-cron}")
     fun updateRepos() {
+        if (!discordProperties.pluginHubSchedulerEnabled) return
         log.info("Going to update repos")
         val repos = restService.get("/repos", Array<PluginRepoDto>::class.java)
             .filter { !it.messageId.isNullOrEmpty() }

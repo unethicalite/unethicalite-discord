@@ -11,5 +11,6 @@ data class DiscordProperties(
     val statusCron: String,
     val sessionsUrl: String,
     val pluginHubChannelId: String,
-    val pluginHubCron: String
+    val pluginHubCron: String,
+    val pluginHubSchedulerEnabled: Boolean
 )
