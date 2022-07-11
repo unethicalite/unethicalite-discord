@@ -9,5 +9,7 @@ data class DiscordProperties(
     val token: String,
     val guildId: String,
     val statusCron: String,
-    val sessionsUrl: String
+    val sessionsUrl: String,
+    val pluginHubChannelId: String,
+    val pluginHubCron: String
 )

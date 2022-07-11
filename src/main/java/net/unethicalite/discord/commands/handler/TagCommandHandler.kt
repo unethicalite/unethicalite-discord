@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.unethicalite.discord.commands.model.DiscordCommand
-import net.unethicalite.discord.helpers.EmbedHelper
 import net.unethicalite.discord.service.RestService
 import net.unethicalite.dto.discord.TagDto
 import net.unethicalite.dto.exception.BackendException

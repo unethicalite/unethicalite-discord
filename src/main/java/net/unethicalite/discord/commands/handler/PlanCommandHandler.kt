@@ -12,11 +12,11 @@ import net.unethicalite.dto.plans.SubscribedDto
 import net.unethicalite.discord.commands.model.DiscordCommand
 import net.unethicalite.dto.exception.BackendException
 import net.unethicalite.discord.service.RestService
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import java.awt.Color
 import java.util.*
 
-@Service
+@Component
 class PlanCommandHandler(
     override val jda: JDA,
     private val restService: RestService

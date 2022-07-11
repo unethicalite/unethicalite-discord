@@ -12,10 +12,10 @@ import net.unethicalite.dto.plugins.UpdatePluginDto
 import net.unethicalite.discord.commands.model.DiscordCommand
 import net.unethicalite.dto.exception.BackendException
 import net.unethicalite.discord.service.RestService
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import java.awt.Color
 
-@Service
+@Component
 class PluginCommandHandler(
     override val jda: JDA,
     private val restService: RestService
