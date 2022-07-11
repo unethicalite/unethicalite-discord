@@ -48,7 +48,7 @@ class PluginHubScheduler(
     private fun sendMessage(user: Member, repo: PluginRepoDto): Message? {
         return jda.getTextChannelById(discordProperties.pluginHubChannelId)
             ?.sendMessageEmbeds(createEmbed(user, repo))
-            ?.complete()
+            ?.complete(false)
     }
 
     private fun createEmbed(user: Member, repo: PluginRepoDto) = embedHelper.builder("Unethicalite Hub")
@@ -59,5 +59,4 @@ class PluginHubScheduler(
         .addField("Repo owner", repo.repoOwnerName, false)
         .addField("Plugins", repo.plugins.size.toString(), false)
         .build()
-
 }
