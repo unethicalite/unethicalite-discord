@@ -21,7 +21,5 @@ class DiscordConfig(
         .awaitReady()
 
     @Bean
-    fun guild(jda: JDA) = jda.getGuildById(discordProperties.guildId)?.also {
-        it.loadMembers()
-    } ?: throw RuntimeException("Guild not found.")
+    fun guild(jda: JDA) = jda.getGuildById(discordProperties.guildId)
 }

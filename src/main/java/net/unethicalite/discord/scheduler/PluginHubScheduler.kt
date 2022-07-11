@@ -10,6 +10,7 @@ import net.unethicalite.discord.service.RestService
 import net.unethicalite.dto.github.PluginRepoDto
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import javax.annotation.PostConstruct
 
 @Component
 class PluginHubScheduler(
@@ -23,11 +24,22 @@ class PluginHubScheduler(
     fun postMissingRepos() {
         val repos = restService.get("/repos", Array<PluginRepoDto>::class.java)
             .filter { it.messageId.isNullOrEmpty() }
+        guild.loadMembers().onSuccess { members ->
+            for (repo in repos) {
+                val user = members.firstOrNull { it.user.id == repo.ownerId }
+                if (user == null) {
+                    println("${repo.ownerId} not found in user list ${guild.name}")
+                    continue
+                }
 
-        for (repo in repos) {
-            val user = guild.getMemberById(repo.ownerId) ?: continue
-            val messageId = sendMessage(user, repo)?.id ?: continue
-            restService.put("/repos/${repo.repoId}?messageId=$messageId&ownerId=${repo.ownerId}", null)
+                val messageId = sendMessage(user, repo)?.id
+                if (messageId == null) {
+                    println("Message not sent")
+                    continue
+                }
+
+                restService.put("/repos/${repo.repoId}?messageId=$messageId&ownerId=${repo.ownerId}", null)
+            }
         }
     }
 
@@ -35,13 +47,23 @@ class PluginHubScheduler(
     fun updateRepos() {
         val repos = restService.get("/repos", Array<PluginRepoDto>::class.java)
             .filter { !it.messageId.isNullOrEmpty() }
-        for (repo in repos) {
-            val user = guild.getMemberById(repo.ownerId) ?: continue
-            jda.getTextChannelById(discordProperties.pluginHubChannelId)
-                ?.editMessageEmbedsById(repo.messageId!!, createEmbed(user, repo))
-                ?.queue(null) {
-                    restService.put("/repos/${repo.repoId}?messageId=&ownerId=${repo.ownerId}", null)
+        guild.loadMembers().onSuccess { members ->
+            for (repo in repos) {
+                val user = members.firstOrNull { it.user.id == repo.ownerId }
+                if (user == null) {
+                    println("${repo.ownerId} not found in user list")
+                    continue
                 }
+
+                jda.getTextChannelById(discordProperties.pluginHubChannelId)
+                    ?.editMessageEmbedsById(repo.messageId!!, createEmbed(user, repo))
+                    ?.submit(false)
+                    ?.whenComplete { _, err ->
+                        if (err != null) {
+                            restService.put("/repos/${repo.repoId}?messageId=&ownerId=${repo.ownerId}", null)
+                        }
+                    }
+            }
         }
     }
 

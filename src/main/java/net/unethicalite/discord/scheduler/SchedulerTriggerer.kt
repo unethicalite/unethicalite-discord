@@ -13,8 +13,8 @@ class SchedulerTriggerer(
     private val executorService = Executors.newScheduledThreadPool(5)
 
     fun triggerPluginHubScheduler() {
-        executorService.schedule({ pluginHubScheduler.postMissingRepos() }, 30, TimeUnit.SECONDS)
-        executorService.schedule({ pluginHubScheduler.updateRepos() }, 60, TimeUnit.SECONDS)
+        executorService.schedule({ pluginHubScheduler.postMissingRepos() }, 0, TimeUnit.SECONDS)
+        executorService.schedule({ pluginHubScheduler.updateRepos() }, 5, TimeUnit.SECONDS)
     }
 
     fun triggerStatusScheduler() {
