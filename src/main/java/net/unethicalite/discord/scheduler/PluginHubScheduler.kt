@@ -65,11 +65,6 @@ class PluginHubScheduler(
                 jda.getTextChannelById(discordProperties.pluginHubChannelId)
                     ?.editMessageEmbedsById(repo.messageId!!, createEmbed(user, repo))
                     ?.submit(false)
-                    ?.whenComplete { _, err ->
-                        if (err != null) {
-                            restService.put("/repos/${repo.repoId}?messageId=&ownerId=${repo.ownerId}", null)
-                        }
-                    }
             }
         }
     }
