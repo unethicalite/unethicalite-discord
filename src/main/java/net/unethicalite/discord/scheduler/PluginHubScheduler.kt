@@ -84,8 +84,8 @@ class PluginHubScheduler(
         .setThumbnail(user.avatarUrl)
         .addField("Owner", user.user.asMention, false)
         .addField("URL", repo.repoUrl, false)
-        .addField("Repo name", repo.repoName, false)
         .addField("Repo owner", repo.repoOwnerName, false)
+        .addField("Repo name", repo.repoName, false)
         .addField("Plugins", repo.plugins.size.toString(), false)
         .build()
 }
