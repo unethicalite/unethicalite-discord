@@ -81,6 +81,7 @@ class PluginHubScheduler(
         .addField("URL", repo.repoUrl, false)
         .addField("Repo owner", repo.repoOwnerName, false)
         .addField("Repo name", repo.repoName, false)
+        .addField("Uses Unethicalite api", repo.unethicalApi.run { if (this) "yes" else "no" }, false)
         .addField("Plugins", repo.plugins.size.toString(), false)
         .build()
 }
